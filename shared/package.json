@@ -1,0 +1,10 @@
+{
+    "name": "shared",
+    "version": "1.0.0",
+    "main": "dist/model.js",
+    "types": "dist/model.d.ts",
+    "type": "module",
+    "scripts": {
+        "build": "tsc"
+    }
+}

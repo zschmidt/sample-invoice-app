@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "declaration": true,  // Generate .d.ts type definitions
+    "outDir": "./dist",   // Output directory for compiled JavaScript and type definitions
+    "module": "es6", // Module system for Node.js
+    "target": "ES6",      // Target ES6 JavaScript
+    "strict": true        // Enable strict type checking
+  },
+  "include": ["model.ts"]
+}
