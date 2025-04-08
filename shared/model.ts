@@ -1,7 +1,7 @@
 export type InvoiceStatus = "Paid" | "Pending" | "Rejected";
 
 export class Invoice {
-  invoiceNumber: string; // Unique identifier
+  invoiceNumber: number; // Unique identifier -- sequential ID which I'm not a huge proponent of...
   payee: string;         // Recipient of the invoice
   amount: number;        // Invoice amount in USD or a specified currency
   dueDate: Date;         // Payment due date
@@ -11,7 +11,7 @@ export class Invoice {
   issueDate: Date;       // Date when the invoice was issued
   description?: string;  // Optional description of the invoice
   constructor(
-    invoiceNumber: string,
+    invoiceNumber: number,
     payee: string,
     amount: number,
     dueDate: Date,
