@@ -204,7 +204,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 									style={{ cursor: 'pointer' }}>
 									<TableCell>{invoice.invoiceNumber}</TableCell>
 									<TableCell>{invoice.payee}</TableCell>
-									<TableCell>{invoice.amount.toFixed(2)}</TableCell>
+									<TableCell>{Number.parseFloat(invoice.amount).toFixed(2)}</TableCell>
 									<TableCell>{dayjs.utc(invoice.dueDate).format('M/D/YYYY')}</TableCell>
 									<TableCell>{invoice.status}</TableCell>
 									<TableCell>{dayjs.utc(invoice.issueDate).format('M/D/YYYY')}</TableCell>
