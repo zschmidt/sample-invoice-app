@@ -18,12 +18,15 @@ import {
 	Button
 } from '@mui/material';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Invoice } from 'shared';
 import { Delete } from '@mui/icons-material';
 import InvoiceService from './InvoiceService.js';
+
+dayjs.extend(utc);
 
 export default function InvoiceTable({ invoices, setInvoices }) {
 	const [loading, setLoading] = useState(true);
@@ -131,6 +134,10 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 			
 	};
 
+	const handleDateChange = (dayjsObject) => {
+		setCurrentInvoice((prev) => ({ ...prev, ['dueDate']: dayjsObject.format('YYYY-MM-DD') }));
+	};
+
 	const handleAmountChange = (event) => {
 		const { name, value } = event.target;
 		if(!Number.parseFloat(value)){
@@ -198,9 +205,9 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 									<TableCell>{invoice.invoiceNumber}</TableCell>
 									<TableCell>{invoice.payee}</TableCell>
 									<TableCell>{invoice.amount.toFixed(2)}</TableCell>
-									<TableCell>{new Date(invoice.dueDate).toLocaleDateString()}</TableCell>
+									<TableCell>{dayjs.utc(invoice.dueDate).format('M/D/YYYY')}</TableCell>
 									<TableCell>{invoice.status}</TableCell>
-									<TableCell>{new Date(invoice.issueDate).toLocaleDateString()}</TableCell>
+									<TableCell>{dayjs.utc(invoice.issueDate).format('M/D/YYYY')}</TableCell>
 									<TableCell>{invoice.description || 'N/A'}</TableCell>
 									<TableCell>
 										<IconButton
@@ -275,8 +282,8 @@ export default function InvoiceTable({ invoices, setInvoices }) {
     							<DatePicker
     								label="Due Date"
 									name="dueDate"
-    								value={dayjs(currentInvoice.dueDate)}
-    								onChange={handleChange}
+    								value={dayjs.utc(currentInvoice.dueDate)}
+    								onChange={handleDateChange}
     							/>
 							</LocalizationProvider>
 							<TextField
@@ -290,8 +297,8 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 								rows={3}
 							/>
 							<Button variant="contained"
-                                onClick={handleSave}
-                                disabled={!currentInvoice.payee || amountError || !currentInvoice.amount || !currentInvoice.dueDate}>
+								onClick={handleSave}
+								disabled={!currentInvoice.payee || amountError || !currentInvoice.amount || !currentInvoice.dueDate}>
                 Save
 							</Button>
 						</>
