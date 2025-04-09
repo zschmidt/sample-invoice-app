@@ -62,7 +62,7 @@ export default function CreatePaymentModal({ invoices, addPayment, updateInvoice
 
 	return (
 		<div>
-			<Button variant="contained" className="add-button" onClick={handleOpen}>Make a Payment</Button>
+			<Button variant="contained" disabled={!invoices || !invoices.length} className="add-button" onClick={handleOpen}>Make a Payment</Button>
 			<Modal
 				open={open}
 				onClose={handleClose}
