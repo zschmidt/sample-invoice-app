@@ -21,7 +21,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
     const [order, setOrder] = useState('asc'); // 'asc' or 'desc'
     const [orderBy, setOrderBy] = useState('invoiceNumber'); // Column to sort by
     const [page, setPage] = useState(0); // Current page
-    const [rowsPerPage, setRowsPerPage] = useState(5); // Rows per page
+    const [rowsPerPage, setRowsPerPage] = useState(10); // Rows per page
 
     const handleSort = (property) => {
         const isAscending = orderBy === property && order === 'asc';
@@ -102,6 +102,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
               { id: 'amount', label: 'Amount ($)' },
               { id: 'dueDate', label: 'Due Date' },
               { id: 'status', label: 'Status' },
+              { id: 'issueDate', label: 'Issue Date' },
               { id: 'description', label: 'Description' },
             ].map((column) => (
               <TableCell key={column.id}>
@@ -124,6 +125,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
                 <TableCell>{invoice.amount.toFixed(2)}</TableCell>
                 <TableCell>{new Date(invoice.dueDate).toLocaleDateString()}</TableCell>
                 <TableCell>{invoice.status}</TableCell>
+                <TableCell>{new Date(invoice.issueDate).toLocaleDateString()}</TableCell>
                 <TableCell>{invoice.description || 'N/A'}</TableCell>
               </TableRow>
             ))}

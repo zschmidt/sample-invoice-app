@@ -46,14 +46,16 @@ export default function CreateModal({ addInvoice }) {
         setAmountError(true);
       } else {
         setAmountError(false);
-        setNewInvoice({ ...newInvoice, [name]: value });
       }
+      //seems gross to still set the value if it's wrong,
+      // but the submit button is disabled, and it prevents an error
+      // where you can't delete the last number in amount
+      setNewInvoice({ ...newInvoice, [name]: value });
     };
 
     const handleSubmit = () => {
       InvoiceService.createInvoice(newInvoice)
         .then((createdInvoice) => {
-          console.log("createdInvoice", createdInvoice)
           alert('Invoice created successfully!');
           addInvoice(createdInvoice);
           handleClose();
