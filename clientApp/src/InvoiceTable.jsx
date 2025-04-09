@@ -10,9 +10,11 @@ import {
     Typography,
     CircularProgress,
     TablePagination,
-    TableSortLabel
+    TableSortLabel,
+    IconButton
 } from '@mui/material';
 import { Invoice } from 'shared';
+import { Delete } from '@mui/icons-material';
 import InvoiceService from './InvoiceService.js'
 
 export default function InvoiceTable({ invoices, setInvoices }) {
@@ -66,18 +68,31 @@ export default function InvoiceTable({ invoices, setInvoices }) {
         const fetchInvoices = () => {
             InvoiceService.getAllInvoices()
                 .then((data) => {
-                  setInvoices(data);
+                    setInvoices(data);
                 })
                 .catch((error) => {
-                  setError(err.message || 'Something went wrong');
+                    setError(err.message || 'Something went wrong');
                 })
                 .finally(() => {
-                  setLoading(false);
+                    setLoading(false);
                 });
         };
 
         fetchInvoices();
     }, [setInvoices]);
+
+    const handleDelete = (invoiceNumber) => {
+
+        InvoiceService.deleteInvoice(invoiceNumber)
+            .then(() => {
+                setInvoices((prevInvoices) =>
+                    prevInvoices.filter((invoice) => invoice.invoiceNumber !== invoiceNumber)
+                );
+            })
+            .catch((error) => {
+                alert('Error deleting invoice:', error);
+            })
+    };
 
     if (loading) {
         return <CircularProgress />;
@@ -115,6 +130,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
                 </TableSortLabel>
               </TableCell>
             ))}
+            <TableCell>Actions</TableCell>
           </TableRow>
           </TableHead>
           <TableBody>
@@ -127,6 +143,15 @@ export default function InvoiceTable({ invoices, setInvoices }) {
                 <TableCell>{invoice.status}</TableCell>
                 <TableCell>{new Date(invoice.issueDate).toLocaleDateString()}</TableCell>
                 <TableCell>{invoice.description || 'N/A'}</TableCell>
+                <TableCell>
+                  <IconButton
+                    aria-label="delete"
+                    color="error"
+                    onClick={() => handleDelete(invoice.invoiceNumber)}
+                  >
+                    <Delete />
+                  </IconButton>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
