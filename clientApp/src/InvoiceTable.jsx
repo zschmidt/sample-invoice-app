@@ -218,6 +218,8 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 											size="small"
 											aria-label="delete"
 											color="error"
+											disabled={invoice.status !== "Pending"}
+											style={{ cursor: invoice.status === "Pending" ? "pointer" : "not-allowed"}}
 											onClick={(e) => {
 												e.stopPropagation();
 												handleDelete(invoice.invoiceNumber);

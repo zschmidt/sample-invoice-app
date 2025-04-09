@@ -251,7 +251,7 @@ router.put('/invoices/:id', (req, res) => {
  *       200:
  *         description: Invoice deleted successfully
  *       400:
- *         description: Invalid invoiceNumber format
+ *         description: Invalid invoiceNumber format or attempting to delete a non Pending Invoice
  *       404:
  *         description: Invoice not found
  */
@@ -270,6 +270,10 @@ router.delete('/invoices/:id', (req, res) => {
 
 	if (index === -1) {
 		return res.status(404).json({ message: "Invoice not found" });
+	}
+
+	if(invoices[index].status !== 'Pending') {
+		return res.status(400).json({ message: "Cannot delete non-Pending Invoice" });
 	}
 
 	invoices.splice(index, 1);
