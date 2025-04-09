@@ -1,12 +1,18 @@
-import './App.css'
+import React, { useState } from 'react';
+import InvoiceTable from './InvoiceTable.jsx'
+import CreateModal from './CreateModal.jsx'
 
-function App() {
-  return (
-    <div>
-      <h1>Hello and good luck</h1>
-      <p>Show list of loans here and give options to add, delete or edit</p>
-    </div>
-  );
-}
+export default function App() {
+  const [invoices, setInvoices] = useState([]);
 
-export default App
+  const addInvoice = (newInvoice) => {
+    setInvoices((prevInvoices) => [...prevInvoices, newInvoice]);
+  };
+
+    return (
+      <>
+      <InvoiceTable  invoices={invoices} setInvoices={setInvoices} />
+      <CreateModal  addInvoice={addInvoice} />
+      </>
+    );
+};
