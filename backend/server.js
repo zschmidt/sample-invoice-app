@@ -268,7 +268,7 @@ router.delete('/invoices/:id', (req, res) => {
 
 	const index = invoices.findIndex((inv) => inv.invoiceNumber === parsedId);
 
-	if (!index) {
+	if (index === -1) {
 		return res.status(404).json({ message: "Invoice not found" });
 	}
 
