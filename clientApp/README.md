@@ -18,3 +18,5 @@ There are a few omissions that were cut simply due to a lack of time.
 * The table for invoices and payments is exceedingly similar. It would be smarter to write them in a way that would allow the developer to simply tell the component what "shape" the data is and have it display that
 
 * Similarly, the modals throughout the app (to create an invoice or payment, or to update an invoice) could also be written in a generic way in order to be reused
+
+* There's obviously a bit of hand waving with regards to the business rules. The person using this application is the same one making invoices and payments -- maybe they are dealing with the payee over the phone or sitting across the desk, though. More importantly, there's no credit card number/bank account number/etc captured. That would prove interesting for the entity who actually needs to charge the account.
