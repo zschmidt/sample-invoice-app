@@ -56,8 +56,13 @@ export default function CreateModal({ addInvoice }) {
 	const handleSubmit = () => {
 		InvoiceService.createInvoice(newInvoice)
 			.then((createdInvoice) => {
-				alert('Invoice created successfully!');
 				addInvoice(createdInvoice);
+				setNewInvoice({
+					payee: '',
+					amount: '',
+					dueDate: '',
+					description: ''
+				});
 				handleClose();
 			})
 			.catch((error) => {
