@@ -19,6 +19,8 @@ A few "quirks" of the model/API are:
 
 * You can't delete or otherwise modify a payment. Perhaps that could trigger the `Rejected` state, but in the real world it would involve charge backs or undoing wire transfers, which seems sticky
 
+* As a (loose) corollary to the above, you're not allowed to modify an Invoice if it is in a state other than `Pending`. This is to prevent the case where you create and pay for an invoice, then decide to change the amount on the invoice (which would cause mayhem with the `Paid` status)
+
 * There's no unit testing. That might be added in the future if I carve out the time, but it's a known hole
 
 * I spent the time centralizing the Invoice/Payment models, then had to duplicate them in the swagger docs. This obviously opens it up to issues with drift. Would be a neat `todo` to figure out how to get swagger to reference my models, but that's probably not going to happen

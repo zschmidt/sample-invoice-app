@@ -180,7 +180,7 @@ router.post('/invoices/', (req, res) => {
  *             schema:
  *               $ref: '#/components/schemas/Invoice'
  *       400:
- *         description: Invalid field update
+ *         description: Invalid field update or attempt to update a non Pending invoice
  *       404:
  *         description: Invoice not found
  */
@@ -199,6 +199,10 @@ router.put('/invoices/:id', (req, res) => {
 
 	if (!index) {
 		return res.status(404).json({ message: "Invoice not found" });
+	}
+
+	if(invoices[index].status !== 'Pending') {
+		return res.status(400).json({ message: "Cannot modify a Paid or Rejected invoice!" });
 	}
 
 	const { payee, amount, dueDate, description } = req.body;
@@ -423,8 +427,6 @@ router.post('/payments/', (req, res) => {
  *       type: object
  *       required:
  *         - paymentMethod
- *         - amount
- *         - paymentDate
  *         - invoiceNumber
  *       properties:
  *         paymentMethod:
@@ -446,6 +448,6 @@ router.post('/payments/', (req, res) => {
  *           description: Date of payment
  *           readOnly: true
  *         invoiceNumber:
- *           type: string
+ *           type: number
  *           description: The associated invoice's unique identifier
  */
