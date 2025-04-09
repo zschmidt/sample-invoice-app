@@ -166,12 +166,12 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 
 	return (
 		<>
-			<Paper sx={{ width: '100%', overflow: 'hidden' }}>
+			<Paper sx={{ width: '100%', overflow: 'hidden'}}>
 				<TableContainer sx={{ maxHeight: '30vh' }}>
 					<Typography variant="h6" sx={{ p: 2 }}>
           Invoice List
 					</Typography>
-					<Table stickyHeader>
+					<Table stickyHeader size="small">
 						<TableHead>
 							<TableRow>
 								{[
@@ -200,8 +200,12 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 							{paginatedInvoices.map((invoice) => (
 								<TableRow hover 
 									key={invoice.invoiceNumber}
-									onClick={() => handleRowClick(invoice)}
-									style={{ cursor: 'pointer' }}>
+									onClick={() => {
+										if(invoice.status === "Pending") {
+											handleRowClick(invoice);
+										}
+									}}
+									style={{ cursor: invoice.status === "Pending" ? "pointer" : "not-allowed"}}>
 									<TableCell>{invoice.invoiceNumber}</TableCell>
 									<TableCell>{invoice.payee}</TableCell>
 									<TableCell>{Number.parseFloat(invoice.amount).toFixed(2)}</TableCell>
@@ -211,6 +215,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 									<TableCell>{invoice.description || 'N/A'}</TableCell>
 									<TableCell>
 										<IconButton
+											size="small"
 											aria-label="delete"
 											color="error"
 											onClick={(e) => {
@@ -218,7 +223,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 												handleDelete(invoice.invoiceNumber);
 											}}
 										>
-											<Delete />
+											<Delete fontSize="small"/>
 										</IconButton>
 									</TableCell>
 								</TableRow>
