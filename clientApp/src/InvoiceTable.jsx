@@ -167,7 +167,7 @@ export default function InvoiceTable({ invoices, setInvoices }) {
 	return (
 		<>
 			<Paper sx={{ width: '100%', overflow: 'hidden' }}>
-				<TableContainer>
+				<TableContainer sx={{ maxHeight: '30vh' }}>
 					<Typography variant="h6" sx={{ p: 2 }}>
           Invoice List
 					</Typography>
