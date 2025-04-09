@@ -12,20 +12,20 @@ const router = Router();
 
 // Swagger setup
 const swaggerOptions = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "Invoice API",
-      version: "1.0.0",
-      description: "A simple CRUD API for managing invoices",
-    },
-    servers: [
-      {
-        url: "http://localhost:5000/",
-      },
-    ],
-  },
-  apis: ["./server.js"], // Path to the API docs
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "Invoice API",
+			version: "1.0.0",
+			description: "A simple CRUD API for managing invoices",
+		},
+		servers: [
+			{
+				url: "http://localhost:5000/",
+			},
+		],
+	},
+	apis: ["./server.js"], // Path to the API docs
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -56,7 +56,7 @@ const payments = [];
  */
 // Get all invoices
 router.get('/invoices/', (req, res) => {
-    res.json(invoices);
+	res.json(invoices);
 });
 
 /**
@@ -85,21 +85,21 @@ router.get('/invoices/', (req, res) => {
  */
 // Get a single invoice
 router.get('/invoices/:id', (req, res) => {
-    const { id } = req.params;
+	const { id } = req.params;
 
-    const parsedId = parseInt(id);
+	const parsedId = parseInt(id);
 
-    if(!parsedId) {
-        return res.status(400).json({ message: "Invalid invoiceNumber" });
-    }
+	if(!parsedId) {
+		return res.status(400).json({ message: "Invalid invoiceNumber" });
+	}
 
-    const invoice = invoices.find((inv) => inv.invoiceNumber === parsedId);
+	const invoice = invoices.find((inv) => inv.invoiceNumber === parsedId);
 
-    if (!invoice) {
-        return res.status(404).json({ message: "Invoice not found" });
-    }
+	if (!invoice) {
+		return res.status(404).json({ message: "Invoice not found" });
+	}
 
-    res.json(invoice);
+	res.json(invoice);
 });
 
 /**
@@ -125,33 +125,33 @@ router.get('/invoices/:id', (req, res) => {
  */
 // Make a new invoice
 router.post('/invoices/', (req, res) => {
-    const { payee, amount, dueDate, description } = req.body;
+	const { payee, amount, dueDate, description } = req.body;
 
-    if(!payee) {
-        return res.status(400).json({ message: "Required field 'payee' not found" });
-    }
+	if(!payee) {
+		return res.status(400).json({ message: "Required field 'payee' not found" });
+	}
 
-    if(!amount || !Number.parseFloat(amount)) {
-        return res.status(400).json({ message: "Required field 'amount' not found or is not a number" });
-    }
+	if(!amount || !Number.parseFloat(amount)) {
+		return res.status(400).json({ message: "Required field 'amount' not found or is not a number" });
+	}
 
-    if(!dueDate || !Date.parse(dueDate)) {
-        return res.status(400).json({ message: "Required field 'dueDate' not found or in an incorrect format (must be ISO 8601 i.e. '2025-04-01')" });
-    }
+	if(!dueDate || !Date.parse(dueDate)) {
+		return res.status(400).json({ message: "Required field 'dueDate' not found or in an incorrect format (must be ISO 8601 i.e. '2025-04-01')" });
+	}
 
-    //Eww! Sequential primary key!
-    const invoiceNumber = invoices.length ? invoices[invoices.length - 1].invoiceNumber + 1 : 1;
+	//Eww! Sequential primary key!
+	const invoiceNumber = invoices.length ? invoices[invoices.length - 1].invoiceNumber + 1 : 1;
 
-    const newInvoice = new Invoice(
-                        invoiceNumber,
-                        payee,
-                        Number.parseFloat(amount),
-                        new Date(dueDate),
-                        'Pending',
-                        new Date(),
-                        description);
-    invoices.push(newInvoice); // Add to in-memory storage (specifically to the back, to not break my flimsy sequential ID)
-    res.status(201).json(newInvoice);
+	const newInvoice = new Invoice(
+		invoiceNumber,
+		payee,
+		Number.parseFloat(amount),
+		new Date(dueDate),
+		'Pending',
+		new Date(),
+		description);
+	invoices.push(newInvoice); // Add to in-memory storage (specifically to the back, to not break my flimsy sequential ID)
+	res.status(201).json(newInvoice);
 });
 
 /**
@@ -187,47 +187,47 @@ router.post('/invoices/', (req, res) => {
 // Update an invoice
 router.put('/invoices/:id', (req, res) => {
 
-    const { id } = req.params;
+	const { id } = req.params;
 
-    const parsedId = parseInt(id);
+	const parsedId = parseInt(id);
 
-    if(!parsedId) {
-        return res.status(400).json({ message: "Invalid invoiceNumber" });
-    }
+	if(!parsedId) {
+		return res.status(400).json({ message: "Invalid invoiceNumber" });
+	}
 
-    const index = invoices.findIndex((inv) => inv.invoiceNumber === parsedId);
+	const index = invoices.findIndex((inv) => inv.invoiceNumber === parsedId);
 
-    if (!index) {
-        return res.status(404).json({ message: "Invoice not found" });
-    }
+	if (!index) {
+		return res.status(404).json({ message: "Invoice not found" });
+	}
 
-    const { payee, amount, dueDate, description } = req.body;
+	const { payee, amount, dueDate, description } = req.body;
 
-    if(!payee && !amount && !dueDate && !description) {
-        return res.status(400).json({ message: "No valid field is being updated!" });
-    }
+	if(!payee && !amount && !dueDate && !description) {
+		return res.status(400).json({ message: "No valid field is being updated!" });
+	}
 
-    if(amount && !Number.parseFloat(amount)) {
-        return res.status(400).json({ message: "Field 'amount' is not a number" });
-    }
+	if(amount && !Number.parseFloat(amount)) {
+		return res.status(400).json({ message: "Field 'amount' is not a number" });
+	}
 
-    if(dueDate && !Date.parse(dueDate)) {
-        return res.status(400).json({ message: "Field 'dueDate' is in an incorrect format (must be ISO 8601 i.e. '2025-04-01')" });
-    }
+	if(dueDate && !Date.parse(dueDate)) {
+		return res.status(400).json({ message: "Field 'dueDate' is in an incorrect format (must be ISO 8601 i.e. '2025-04-01')" });
+	}
 
-    const oldInvoice = invoices[index];
+	const oldInvoice = invoices[index];
 
-    const updatedInvoice = new Invoice(
-                        oldInvoice.invoiceNumber,
-                        payee || oldInvoice.payee,
-                        amount ? Number.parseFloat(amount) : oldInvoice.amount,
-                        dueDate ? new Date(dueDate) : oldInvoice.dueDate,
-                        oldInvoice.status,
-                        oldInvoice.issueDate,
-                        description || oldInvoice.description);
+	const updatedInvoice = new Invoice(
+		oldInvoice.invoiceNumber,
+		payee || oldInvoice.payee,
+		amount ? Number.parseFloat(amount) : oldInvoice.amount,
+		dueDate ? new Date(dueDate) : oldInvoice.dueDate,
+		oldInvoice.status,
+		oldInvoice.issueDate,
+		description || oldInvoice.description);
 
-    invoices.splice(index, 1, updatedInvoice);
-    res.json(updatedInvoice);
+	invoices.splice(index, 1, updatedInvoice);
+	res.json(updatedInvoice);
 });
 
 
@@ -254,22 +254,22 @@ router.put('/invoices/:id', (req, res) => {
 // Delete an invoice
 router.delete('/invoices/:id', (req, res) => {
 
-    const { id } = req.params;
+	const { id } = req.params;
 
-    const parsedId = parseInt(id);
+	const parsedId = parseInt(id);
 
-    if(!parsedId) {
-        return res.status(400).json({ message: "Invalid invoiceNumber" });
-    }
+	if(!parsedId) {
+		return res.status(400).json({ message: "Invalid invoiceNumber" });
+	}
 
-    const index = invoices.findIndex((inv) => inv.invoiceNumber === parsedId);
+	const index = invoices.findIndex((inv) => inv.invoiceNumber === parsedId);
 
-    if (!index) {
-        return res.status(404).json({ message: "Invoice not found" });
-    }
+	if (!index) {
+		return res.status(404).json({ message: "Invoice not found" });
+	}
 
-    invoices.splice(index, 1);
-    return res.status(200).json({ message: "Invoice deleted successfully" });
+	invoices.splice(index, 1);
+	return res.status(200).json({ message: "Invoice deleted successfully" });
 });
 
 /**
@@ -289,7 +289,7 @@ router.delete('/invoices/:id', (req, res) => {
  */
 // Get all payments
 router.get('/payments/', (req, res) => {
-    res.json(payments);
+	res.json(payments);
 });
 
 /**
@@ -316,50 +316,50 @@ router.get('/payments/', (req, res) => {
 // Make a new payment
 router.post('/payments/', (req, res) => {
 
-    const { invoiceNumber, paymentMethod } = req.body;
+	const { invoiceNumber, paymentMethod } = req.body;
 
-    // Validate input
-    if (!invoiceNumber || !parseInt(invoiceNumber) || !paymentMethod) {
-        return res.status(400).json({ error: 'Invalid request payload' });
-    }
+	// Validate input
+	if (!invoiceNumber || !parseInt(invoiceNumber) || !paymentMethod) {
+		return res.status(400).json({ error: 'Invalid request payload' });
+	}
 
-    if (paymentMethod != 'Cash' &&
+	if (paymentMethod != 'Cash' &&
         paymentMethod != 'Credit' &&
         paymentMethod != 'ACH' &&
         paymentMethod != 'Wire') {
-        return res.status(400).json({ error: 'Invalid payment method' });
-    }
+		return res.status(400).json({ error: 'Invalid payment method' });
+	}
 
-    // Find the invoice
-    const invoiceIndex = invoices.findIndex((inv) => inv.invoiceNumber === parseInt(invoiceNumber));
+	// Find the invoice
+	const invoiceIndex = invoices.findIndex((inv) => inv.invoiceNumber === parseInt(invoiceNumber));
 
-    if (invoiceIndex === -1) {
-        return res.status(400).json({ error: 'Invoice not found' });
-    }
+	if (invoiceIndex === -1) {
+		return res.status(400).json({ error: 'Invoice not found' });
+	}
 
-    const invoice = invoices[invoiceIndex];
+	const invoice = invoices[invoiceIndex];
 
-    // Validate invoice status and amount
-    if (invoice.status !== 'Pending') {
-        return res.status(400).json({ error: 'Invoice is not in a payable state' });
-    }
+	// Validate invoice status and amount
+	if (invoice.status !== 'Pending') {
+		return res.status(400).json({ error: 'Invoice is not in a payable state' });
+	}
 
-    // Create the payment
-    const newPayment = new Payment(
-        paymentMethod,
-        invoice.amount,
-        new Date(),
-        invoiceNumber
-    );
+	// Create the payment
+	const newPayment = new Payment(
+		paymentMethod,
+		invoice.amount,
+		new Date(),
+		invoiceNumber
+	);
 
-    payments.push(newPayment);
+	payments.push(newPayment);
 
-    //TODO: Maybe this is where the payment could fail and we move to the `Rejected` state
-    const updatedInvoice = { ...invoice, status: 'Paid' };
+	//TODO: Maybe this is where the payment could fail and we move to the `Rejected` state
+	const updatedInvoice = { ...invoice, status: 'Paid' };
 
-    invoices.splice(invoiceIndex, 1, updatedInvoice);
+	invoices.splice(invoiceIndex, 1, updatedInvoice);
 
-    res.status(201).json(newPayment);
+	res.status(201).json(newPayment);
 });
 
 
