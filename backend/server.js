@@ -31,12 +31,13 @@ const swaggerOptions = {
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-app.use('/api/invoices', router);
+app.use('/api', router);
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 const invoices = [];
+const payments = [];
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ const invoices = [];
  *                 $ref: '#/components/schemas/Invoice'
  */
 // Get all invoices
-router.get('/', (req, res) => {
+router.get('/invoices/', (req, res) => {
     res.json(invoices);
 });
 
@@ -83,7 +84,7 @@ router.get('/', (req, res) => {
  *         description: Invoice not found
  */
 // Get a single invoice
-router.get('/:id', (req, res) => {
+router.get('/invoices/:id', (req, res) => {
     const { id } = req.params;
 
     const parsedId = parseInt(id);
@@ -123,7 +124,7 @@ router.get('/:id', (req, res) => {
  *         description: Missing any of {payee, amount, dueDate}
  */
 // Make a new invoice
-router.post('/', (req, res) => {
+router.post('/invoices/', (req, res) => {
     const { payee, amount, dueDate, description } = req.body;
 
     if(!payee) {
@@ -184,7 +185,7 @@ router.post('/', (req, res) => {
  *         description: Invoice not found
  */
 // Update an invoice
-router.put('/:id', (req, res) => {
+router.put('/invoices/:id', (req, res) => {
 
     const { id } = req.params;
 
@@ -251,7 +252,7 @@ router.put('/:id', (req, res) => {
  *         description: Invoice not found
  */
 // Delete an invoice
-router.delete('/:id', (req, res) => {
+router.delete('/invoices/:id', (req, res) => {
 
     const { id } = req.params;
 
@@ -269,6 +270,96 @@ router.delete('/:id', (req, res) => {
 
     invoices.splice(index, 1);
     return res.status(200).json({ message: "Invoice deleted successfully" });
+});
+
+/**
+ * @swagger
+ * /api/payments/:
+ *   get:
+ *     summary: Get all payments
+ *     responses:
+ *       200:
+ *         description: A list of payments
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Payment'
+ */
+// Get all payments
+router.get('/payments/', (req, res) => {
+    res.json(payments);
+});
+
+/**
+ * @swagger
+ * /api/payments/:
+ *   post:
+ *     summary: Create a new payment
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Payment'
+ *     responses:
+ *       201:
+ *         description: Payment created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Payment'
+ *       400:
+ *         description: Tried to pay for an invalid invoice
+ */
+// Make a new payment
+router.post('/payments/', (req, res) => {
+
+    const { invoiceNumber, paymentMethod } = req.body;
+
+    // Validate input
+    if (!invoiceNumber || !parseInt(invoiceNumber) || !paymentMethod) {
+        return res.status(400).json({ error: 'Invalid request payload' });
+    }
+
+    if (paymentMethod != 'Cash' &&
+        paymentMethod != 'Credit' &&
+        paymentMethod != 'ACH' &&
+        paymentMethod != 'Wire') {
+        return res.status(400).json({ error: 'Invalid payment method' });
+    }
+
+    // Find the invoice
+    const invoiceIndex = invoices.findIndex((inv) => inv.invoiceNumber === parseInt(invoiceNumber));
+
+    if (invoiceIndex === -1) {
+        return res.status(400).json({ error: 'Invoice not found' });
+    }
+
+    const invoice = invoices[invoiceIndex];
+
+    // Validate invoice status and amount
+    if (invoice.status !== 'Pending') {
+        return res.status(400).json({ error: 'Invoice is not in a payable state' });
+    }
+
+    // Create the payment
+    const newPayment = new Payment(
+        paymentMethod,
+        invoice.amount,
+        new Date(),
+        invoiceNumber
+    );
+
+    payments.push(newPayment);
+
+    //TODO: Maybe this is where the payment could fail and we move to the `Rejected` state
+    const updatedInvoice = { ...invoice, status: 'Paid' };
+
+    invoices.splice(invoiceIndex, 1, updatedInvoice);
+
+    res.status(201).json(newPayment);
 });
 
 
@@ -348,10 +439,12 @@ router.delete('/:id', (req, res) => {
  *           type: number
  *           description: Payment amount
  *           format: float
+ *           readOnly: true
  *         paymentDate:
  *           type: string
  *           format: date
  *           description: Date of payment
+ *           readOnly: true
  *         invoiceNumber:
  *           type: string
  *           description: The associated invoice's unique identifier
