@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import InvoiceTable from './InvoiceTable.jsx'
-import InvoiceService from './InvoiceService.js'
+import InvoiceTable from './InvoiceTable.jsx';
+import InvoiceService from './InvoiceService.js';
 import {
 	Button,
 	Modal,
@@ -8,7 +8,7 @@ import {
 	Typography,
 	TextField
 } from '@mui/material';
-import './CreateModal.css'
+import './CreateModal.css';
 
 const modalStyle = {
 	position: 'absolute',

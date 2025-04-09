@@ -37,7 +37,7 @@ const InvoiceService = {
 			body: JSON.stringify(invoice),
 		});
 		if (!response.ok) {
-			console.log("here's response ", response)
+			console.log("here's response ", response);
 			throw new Error(`Failed to create invoice: ${response.statusText}`);
 		}
 		return await response.json();
