@@ -13,7 +13,7 @@ A few "quirks" of the model/API are:
 
 * It's not possible to reach the `Rejected` state. In my mind, this could be a state that's reached when the payment is rejected by the bank/etc. 
 
-* You can only make a payment in full. This is done so that I don't spend every waking minute coding this thing. Future expansion could include partial payments, with an update to the server logic to only update an invoice to `Paid` if the full payment amount has been reached. In fact, the API doesn't even allow you to send an amount, it's a read only field.
+* You can only make a payment in full. This is done to simplify development in this prototype context. Future expansion could include partial payments, with an update to the server logic to only update an invoice to `Paid` if the full payment amount has been reached. Futhermore, the API doesn't even allow you to send an amount, it's a read only field.
 
 * You're not allowed to make a payment in the future. Payments get stamped with a `paymentDate` of when the payment hits the POST route in the server
 
@@ -23,4 +23,4 @@ A few "quirks" of the model/API are:
 
 * There's no unit testing. That might be added in the future if I carve out the time, but it's a known hole
 
-* I spent the time centralizing the Invoice/Payment models, then had to duplicate them in the swagger docs. This obviously opens it up to issues with drift. Would be a neat `todo` to figure out how to get swagger to reference my models, but that's probably not going to happen
+* I spent the time centralizing the Invoice/Payment models, then had to duplicate them in the swagger docs. This obviously opens it up to issues with drift. Would be a neat `todo` to figure out how to get swagger to reference my models

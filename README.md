@@ -4,7 +4,7 @@
 Welcome to the sample-invoice-app! Generally, this project is one that allows a user to make and pay invoices via a React front end and an express.js backend. This repository has three main directories as follows:
 
 
-* `shared`: This houses the common data models, `Invoice` and `Payment`. It allowed me to now have to maintain them in both the front and backends
+* `shared`: This houses the common data models, `Invoice` and `Payment`. It allowed me to not have to maintain them in both the front and backends
 
 * `backend`: This is the express.js server
 

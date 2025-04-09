@@ -5,7 +5,7 @@ The frontend requires the server to be running in order to function properly -- 
 
 There are a multitude of ways to run the frontend, the simplest is probably to just run `npm run dev`.
 
-After running, the app should be straightforward (if it's not obvious how to do something, it's bad UX). 
+After running, useage should be straightforward. 
 
 Since the API was written in a way to disallow any actions that end in "bad" states, the frontend didn't need to be especially hardened against bad user input. Nevertheless, I think I've covered most use cases and prevented the user from clicking on anything that would allow garbage to be sent to the API. Most actions that are disallowed are simply manifestations of rules that I've written in to the backend.
 
